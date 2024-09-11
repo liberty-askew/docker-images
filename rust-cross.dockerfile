@@ -11,6 +11,7 @@ RUN curl "https://ziglang.org/download/0.12.0/$zigVersion.tar.xz" --output "$zig
     mv "$zigVersion" /usr/local/zig/ &&\
     rm "$zigVersion.tar.xz"
 
+RUN pip3 install pdm
 RUN cargo install cargo-zigbuild
 RUN cargo install cargo-xwin
 RUN cd root && cargo new tmp && cd tmp && rustup target add x86_64-pc-windows-msvc && cargo xwin check --target x86_64-pc-windows-msvc && cd .. && rm -r tmp
