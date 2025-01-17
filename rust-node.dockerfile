@@ -8,6 +8,8 @@ RUN apt update && apt upgrade -y && \
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
     apt install -y nodejs
 
+RUN apt install perl-base libperl5.36 && apt install -y wget
+
 # Enable Corepack (for managing package managers like pnpm)
 RUN corepack enable && \
     corepack prepare pnpm@latest-8 --activate
