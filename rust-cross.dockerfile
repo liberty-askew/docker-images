@@ -1,15 +1,20 @@
 FROM rust:1.78-slim-bookworm
 
+# Install necessary dependencies, including protobuf-compiler and sccache
 RUN apt-get update && apt-get install -y --no-install-recommends \
     wget apt-transport-https protobuf-compiler ca-certificates git curl \
-    clang llvm lld xz-utils python3-venv python3-pip perl-base libperl5.36 \
+    clang llvm lld xz-utils python3-venv python3-pip perl-base libperl5.36 sccache \
     && wget https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb -O packages-microsoft-prod.deb \
     && dpkg -i packages-microsoft-prod.deb \
-    && apt-get update && apt-get install -y --no-install-recommends protobuf-compiler dotnet-runtime-7.0 \
+    && apt-get update && apt-get install -y --no-install-recommends dotnet-runtime-7.0 \
     && rm -rf /var/lib/apt/lists/* \
     && rm packages-microsoft-prod.deb
 
-ENV LD_LIBRARY_PATH=/usr/share/dotnet/shared/Microsoft.NETCore.App/7.0
+RUN which sccache || cargo install sccache
+
+ENV SCCACHE_DIR="/root/.cache/sccache"
+ENV RUSTC_WRAPPER="sccache"
+ENV CARGO_NET_GIT_FETCH_WITH_CLI="true"
 
 ENV zigVersion="zig-linux-x86_64-0.12.0"
 ENV PATH="/usr/local/zig:$PATH"
