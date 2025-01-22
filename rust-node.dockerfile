@@ -7,11 +7,17 @@ RUN apt update && apt upgrade -y && \
     mingw-w64 pkg-config libssl-dev perl-base libperl5.36 wget && \
     rm -rf /var/lib/apt/lists/*
 
+RUN apk add --no-cache openssh-client
+
 # Install Node.js 18.x and pnpm
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
     apt install -y nodejs && \
     corepack enable && \
     corepack prepare pnpm@latest-8 --activate
+
+ENV SCCACHE_DIR="/root/.cache/sccache"
+ENV RUSTC_WRAPPER="sccache"
+ENV CARGO_HOME="/usr/local/cargo"
 
 # Set up Zig
 ENV ZIG_VERSION="zig-linux-x86_64-0.12.0"
